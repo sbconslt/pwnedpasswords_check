@@ -30,7 +30,7 @@ while True:
 	res = urllib.request.urlopen(req)
 	content = res.read().decode()
 
-	match = [l for l in content.split() if suffix in l]
+	match = list( filter(lambda x: suffix in x, content.split() ) )
 	if match:
 		occurrences = match[0].split(':')[1]
 		print(f'{RED}{occurrences} occurrences{ENDC}')
