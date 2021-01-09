@@ -1,5 +1,23 @@
 #!/usr/bin/env python3
 
+'''
+pwnedpasswords_check.py - interactive console session for querying the Pwned Passwords service
+Copyright (C) 2021 Scott Brown
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
+
 import getpass
 import sys
 import hashlib
@@ -30,7 +48,7 @@ while True:
 	res = urllib.request.urlopen(req)
 	content = res.read().decode()
 
-	match = list( filter(lambda x: suffix in x, content.split() ) )
+	match = list( filter( lambda x: suffix in x, content.split() ) )
 	if match:
 		occurrences = match[0].split(':')[1]
 		print(f'{RED}{occurrences} occurrences{ENDC}')
