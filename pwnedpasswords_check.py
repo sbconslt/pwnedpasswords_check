@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 '''
-pwnedpasswords_check.py - interactive console session for querying the Pwned Passwords service
+pwnedpasswords_check.py
+Interactive console session for querying the Pwned Passwords service
 Copyright (C) 2021 Scott Brown
 
 This program is free software: you can redistribute it and/or modify
@@ -27,6 +28,7 @@ RED = '\033[91m'
 GREEN = '\033[92m'
 ENDC = '\033[0m'
 
+
 def pwnedpasswords_check(p):
 
 	h = hashlib.sha1(p.encode()).hexdigest().upper()
@@ -38,12 +40,13 @@ def pwnedpasswords_check(p):
 	res = urllib.request.urlopen(req)
 	content = res.read().decode()
 
-	match = list( filter( lambda x: suffix in x, content.split() ) )
+	match = list(filter(lambda x: suffix in x, content.split()))
 	if match:
 		occurrences = match[0].split(':')[1]
 		print(f'{RED}{occurrences} occurrences{ENDC}')
 	else:
 		print(f'{GREEN}No occurrences{ENDC}')
+
 
 if __name__ == "__main__":
 
