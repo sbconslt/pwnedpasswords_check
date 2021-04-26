@@ -27,17 +27,7 @@ RED = '\033[91m'
 GREEN = '\033[92m'
 ENDC = '\033[0m'
 
-while True:
-
-	try:
-		p = getpass.getpass(prompt='Password to test (or blank to exit): ')
-	except (EOFError, KeyboardInterrupt):  # trap ctrl+d, ctrl+c
-		print()  # newline
-		sys.exit()  # bail
-
-	p = p.strip()
-	if not p:  # blank input (user exit intent)
-		sys.exit()  # bail
+def pwnedpasswords_check(p):
 
 	h = hashlib.sha1(p.encode()).hexdigest().upper()
 	prefix, suffix = h[:5], h[5:]
@@ -55,5 +45,20 @@ while True:
 	else:
 		print(f'{GREEN}No occurrences{ENDC}')
 
-	print()  # spacer
+if __name__ == "__main__":
 
+	while True:
+
+		try:
+			p = getpass.getpass(prompt='Password to test (or blank to exit): ')
+		except (EOFError, KeyboardInterrupt):  # trap ctrl+d, ctrl+c
+			print()  # newline
+			sys.exit()  # bail
+
+		p = p.strip()
+		if not p:  # blank input (user exit intent)
+			sys.exit()  # bail
+
+		pwnedpasswords_check(p)
+
+		print()  # spacer
