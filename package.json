@@ -1,0 +1,14 @@
+{
+	"name": "pwnedpasswords_check",
+	"author": "Scott Brown (https://github.com/sbconslt)",
+	"version": "1.0.0",
+	"license": "GPL-3.0-or-later",
+	"description": "Quick and dirty interactive console session for querying the Pwned Passwords service.",
+	"repository": "github:sbconslt/pwnedpasswords_check",
+	"homepage": "https://github.com/sbconslt/pwnedpasswords_check",
+	"main": "pwnedpasswords_check.js",
+	"dependencies": {
+		"getpass": "^0.1.7",
+		"node-fetch": "^2.6.1"
+	}
+}

@@ -2,9 +2,12 @@
 
 Quick and dirty interactive console session for querying the [Pwned Passwords](https://haveibeenpwned.com/Passwords) service.
 
+Python 3 or Node.js, pick your poison.
+
 ## Requirements
 
-- Python 3
+- Python 3: all imports are in the standard library
+- Node.js: npm modules node-fetch, getpass
 
 ## Usage
 
