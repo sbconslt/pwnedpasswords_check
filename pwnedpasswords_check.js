@@ -1,23 +1,24 @@
 #!/usr/bin/env node
 
 /*
-pwnedpasswords_check.js
-Interactive console session for querying the Pwned Passwords service
-Copyright (C) 2021 Scott Brown
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ * pwnedpasswords_check.js
+ * Interactive console session for querying the Pwned Passwords service
+ * Copyright (C) 2021 Scott Brown
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
 
 const getpass = require('getpass');
 const crypto = require('crypto');
@@ -44,30 +45,39 @@ async function pwnedpasswords_check(p) {
 	let match = content.split('\r\n')
 			.filter(x => x.startsWith(suffix));
 
-	if ( match.length ) {
-		let occurrences = match[0].split(':')[1];
-		console.log(`${RED}${occurrences} occurrences${ENDC}`);
-	} else {
-		console.log(`${GREEN}no occurrences${ENDC}`);
-	}
-
-	console.log(); // spacer
-
-	prompt();
+	return match.length ? Number(match[0].split(':')[1]) : 0;
 
 }
 
 function prompt() {
 
 	getpass.getPass({"prompt":"Password to test (or blank to exit)"},
-		(err, p) => {
+		async function (err, p) {
+
 			if ( err ) process.exit(0); // error, bail
+
 			p = p.trim();
-			if ( p ) pwnedpasswords_check(p);
-			else process.exit(0); // blank input (user exit intent)
+			if ( ! p.length ) process.exit(0); // blank input (user exit intent)
+
+			let occurrences = await pwnedpasswords_check(p);
+
+			if ( occurrences ) {
+				console.log(`${RED}${occurrences} occurrences${ENDC}`);
+			} else {
+				console.log(`${GREEN}no occurrences${ENDC}`);
+			}
+
+			console.log(); // spacer
+
+			prompt();
+
 		}
 	);
 
 }
 
-prompt();
+if ( require.main === module ) {
+	prompt();
+}
+
+module.exports = { pwnedpasswords_check };

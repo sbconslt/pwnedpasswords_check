@@ -1,7 +1,7 @@
 {
 	"name": "pwnedpasswords_check",
 	"author": "Scott Brown (https://github.com/sbconslt)",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "GPL-3.0-or-later",
 	"description": "Quick and dirty interactive console session for querying the Pwned Passwords service.",
 	"repository": "github:sbconslt/pwnedpasswords_check",

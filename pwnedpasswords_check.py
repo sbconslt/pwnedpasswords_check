@@ -41,11 +41,8 @@ def pwnedpasswords_check(p):
 	content = res.read().decode()
 
 	match = list(filter(lambda x: suffix in x, content.split()))
-	if match:
-		occurrences = match[0].split(':')[1]
-		print(f'{RED}{occurrences} occurrences{ENDC}')
-	else:
-		print(f'{GREEN}No occurrences{ENDC}')
+
+	return int(match[0].split(':')[1]) if match else 0
 
 
 if __name__ == "__main__":
@@ -62,6 +59,11 @@ if __name__ == "__main__":
 		if not p:  # blank input (user exit intent)
 			sys.exit()  # bail
 
-		pwnedpasswords_check(p)
+		occurrences = pwnedpasswords_check(p)
+
+		if occurrences:
+			print(f'{RED}{occurrences} occurrences{ENDC}')
+		else:
+			print(f'{GREEN}No occurrences{ENDC}')
 
 		print()  # spacer
