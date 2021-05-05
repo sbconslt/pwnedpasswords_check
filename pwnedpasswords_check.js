@@ -29,7 +29,7 @@ const GREEN = '\x1b[92m';
 const ENDC = '\x1b[0m';
 
 
-async function pwnedpasswords_check(p) {
+function pwnedpasswords_check(p) {
 
 	let h = crypto.createHash('sha1')
 			.update(p)
@@ -39,37 +39,39 @@ async function pwnedpasswords_check(p) {
 	let prefix = h.substring(0,5), suffix = h.substring(5);
 
 	const url = 'https://api.pwnedpasswords.com/range/' + prefix;
-	const response = await fetch(url, {"headers": {"User-Agent":"Node-Pwnedpasswords-Check"}});
-	const content = await response.text();
 
-	let match = content.split('\r\n')
-			.filter(x => x.startsWith(suffix));
-
-	return match.length ? Number(match[0].split(':')[1]) : 0;
+	return fetch(url, {"headers": {"User-Agent":"Node-Pwnedpasswords-Check"}})
+		.then(response => response.text())
+		.then(content => content.split('\r\n'))
+		.then(lines => lines.filter(x => x.startsWith(suffix)))
+		.then(match => match.length ? Number(match[0].split(':')[1]) : 0 );
 
 }
 
 function prompt() {
 
 	getpass.getPass({"prompt":"Password to test (or blank to exit)"},
-		async function (err, p) {
+		(err, p) => {
 
 			if ( err ) process.exit(0); // error, bail
 
 			p = p.trim();
 			if ( ! p.length ) process.exit(0); // blank input (user exit intent)
 
-			let occurrences = await pwnedpasswords_check(p);
+			pwnedpasswords_check(p)
+				.then(occurrences => {
 
-			if ( occurrences ) {
-				console.log(`${RED}${occurrences} occurrences${ENDC}`);
-			} else {
-				console.log(`${GREEN}no occurrences${ENDC}`);
-			}
+					if ( occurrences ) {
+						console.log(`${RED}${occurrences} occurrences${ENDC}`);
+					} else {
+						console.log(`${GREEN}no occurrences${ENDC}`);
+					}
 
-			console.log(); // spacer
+					console.log(); // spacer
 
-			prompt();
+					prompt();
+
+				});
 
 		}
 	);
