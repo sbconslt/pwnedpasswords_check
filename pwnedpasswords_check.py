@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-'''
+
+"""
 pwnedpasswords_check.py
 Interactive console session for querying the Pwned Passwords service
-Copyright (C) 2021 Scott Brown
+Copyright (C) 2024 Scott Brown
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,53 +18,62 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
-'''
+"""
+
 
 import getpass
-import sys
 import hashlib
-import urllib.request
+import requests
 
-RED = '\033[91m'
-GREEN = '\033[92m'
-ENDC = '\033[0m'
+
+RED = "\033[91m"
+GREEN = "\033[92m"
+ENDC = "\033[0m"
 
 
 def pwnedpasswords_check(p):
+    """Query Pwned Passwords for one password"""
 
-	h = hashlib.sha1(p.encode()).hexdigest().upper()
-	prefix, suffix = h[:5], h[5:]
+    h = hashlib.sha1(p.encode()).hexdigest().upper()
+    prefix, suffix = h[:5], h[5:]
 
-	url = 'https://api.pwnedpasswords.com/range/' + prefix
-	req = urllib.request.Request(url)
-	req.add_header('User-Agent', 'Python-Pwnedpasswords-Check')
-	res = urllib.request.urlopen(req)
-	content = res.read().decode()
+    url = f"https://api.pwnedpasswords.com/range/{prefix}"
+    res = requests.get(
+        url, headers={"User-Agent": "Python-Pwnedpasswords-Check"}, timeout=20
+    )
+    content = res.text
 
-	match = list(filter(lambda x: suffix in x, content.split()))
+    match = list(filter(lambda x: suffix in x, content.split()))
 
-	return int(match[0].split(':')[1]) if match else 0
+    return int(match[0].split(":")[1]) if match else 0
+
+
+def prompt():
+    """Interactive query loop"""
+
+    while True:
+
+        try:
+            p = getpass.getpass(prompt="Password to test (or blank to exit): ")
+        except (EOFError, KeyboardInterrupt):  # trap ctrl+d, ctrl+c
+            print()  # newline
+            return  # bail
+
+        p = p.strip()
+        if not p:  # blank input (user exit intent)
+            return  # bail
+
+        occurrences = pwnedpasswords_check(p)
+
+        if occurrences:
+            print(f"{RED}{occurrences} occurrences{ENDC}")
+        else:
+            print(f"{GREEN}No occurrences{ENDC}")
+
+        print()  # spacer
 
 
 if __name__ == "__main__":
 
-	while True:
-
-		try:
-			p = getpass.getpass(prompt='Password to test (or blank to exit): ')
-		except (EOFError, KeyboardInterrupt):  # trap ctrl+d, ctrl+c
-			print()  # newline
-			sys.exit()  # bail
-
-		p = p.strip()
-		if not p:  # blank input (user exit intent)
-			sys.exit()  # bail
-
-		occurrences = pwnedpasswords_check(p)
-
-		if occurrences:
-			print(f'{RED}{occurrences} occurrences{ENDC}')
-		else:
-			print(f'{GREEN}No occurrences{ENDC}')
-
-		print()  # spacer
+    # Entry point
+    prompt()
