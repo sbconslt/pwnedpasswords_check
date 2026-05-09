@@ -19,5 +19,5 @@ Python 3 or Node.js, pick your poison.
 
 ## References
 
-- [Querying the Pwned Passwords API to Identify Breached Passwords](https://www.scottbrownconsulting.com/2018/02/querying-the-pwned-passwords-api-to-identify-breached-passwords/)
+- [Querying the Pwned Passwords API to Identify Breached Passwords](https://web.archive.org/web/20251113224703/https://www.scottbrownconsulting.com/2018/02/querying-the-pwned-passwords-api-to-identify-breached-passwords/)
 
